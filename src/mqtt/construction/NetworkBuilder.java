@@ -3,7 +3,6 @@ package mqtt.construction;
 import mqtt.network.MqttPublisher;
 import mqtt.network.MqttSubscriber;
 import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.internal.wire.MqttPublish;
 
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
@@ -17,7 +16,7 @@ public class NetworkBuilder {
     private ArrayList<MqttPublisher> publishers = new ArrayList<>();
     private ArrayList<MqttSubscriber> subscribers = new ArrayList<>();
 
-    private void buildAndStartPublishers() throws MqttException, InterruptedException {
+    private void buildAndStartPublishers() throws MqttException {
         MqttPublisher publisher = new MqttPublisher(CONNECTION, TOPIC);
         publisher.addSensor();
         publisher.connectToBroker();

@@ -1,7 +1,13 @@
 # Compiled class file
 *.class
+
+*.xml
+*/*.xml
+.idea/
+.DS_Store
 *paho.mqtt.java-master/
 paho*
+
 # Log file
 *.log
 *.iml
@@ -22,3 +28,4 @@ paho*
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+.idea/workspace.xml

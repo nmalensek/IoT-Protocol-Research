@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 public class MqttPublisher extends MqttNode {
 
     private TempAndHumiditySensor sensor;
-    private Long sensorIdCounter = 1L;
     private ScheduledExecutorService executorService;
 
     public MqttPublisher(String connectionString, String topic) throws MqttException {
@@ -17,7 +16,7 @@ public class MqttPublisher extends MqttNode {
     }
 
     public void addSensor() {
-        sensor = new TempAndHumiditySensor(client, topic, sensorIdCounter);
+        sensor = new TempAndHumiditySensor(client, topic, Id);
     }
 
     public void startPublishing(int delay, int period, TimeUnit interval) {

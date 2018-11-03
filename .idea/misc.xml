@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/../../MqttFiles/paho.mqtt.java-master/pom.xml" />
+        <option value="$PROJECT_DIR$/../../a/paho.mqtt.java-master/pom.xml" />
+      </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/../../MqttFiles/paho.mqtt.java-master/org.eclipse.paho.client.eclipse.feature/pom.xml" />
+        <option value="$PROJECT_DIR$/../../MqttFiles/paho.mqtt.java-master/org.eclipse.paho.client.eclipse.view/pom.xml" />
+        <option value="$PROJECT_DIR$/../../MqttFiles/paho.mqtt.java-master/org.eclipse.paho.client.mqttv3.repository/pom.xml" />
+        <option value="$PROJECT_DIR$/../../MqttFiles/paho.mqtt.java-master/org.eclipse.paho.client.mqttv3.test/pom.xml" />
+        <option value="$PROJECT_DIR$/../../MqttFiles/paho.mqtt.java-master/org.eclipse.paho.client.mqttv3/pom.xml" />
+        <option value="$PROJECT_DIR$/../../MqttFiles/paho.mqtt.java-master/org.eclipse.paho.sample.utility/pom.xml" />
+        <option value="$PROJECT_DIR$/../../MqttFiles/paho.mqtt.java-master/org.eclipse.paho.ui/org.eclipse.paho.ui.app/pom.xml" />
+        <option value="$PROJECT_DIR$/../../MqttFiles/paho.mqtt.java-master/org.eclipse.paho.ui/org.eclipse.paho.ui.core/pom.xml" />
+        <option value="$PROJECT_DIR$/../../MqttFiles/paho.mqtt.java-master/org.eclipse.paho.ui/org.eclipse.paho.ui.plugin/pom.xml" />
+        <option value="$PROJECT_DIR$/../../MqttFiles/paho.mqtt.java-master/org.eclipse.paho.ui/pom.xml" />
+        <option value="$PROJECT_DIR$/../../MqttFiles/paho.mqtt.java-master/pom.xml" />
+      </set>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_10" project-jdk-name="10.0 (1)" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>

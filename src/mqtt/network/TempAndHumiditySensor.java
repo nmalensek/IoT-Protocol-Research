@@ -8,16 +8,16 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 
 public class TempAndHumiditySensor implements Callable<Boolean>, Sensor {
-    private Long sensorId;
+    private String publisherId;
     private IMqttClient client;
     private Random random = new Random();
     private StringBuilder builder = new StringBuilder();
     private String topic;
 
-    public TempAndHumiditySensor(IMqttClient client, String initialTopic, Long sensorId) {
+    public TempAndHumiditySensor(IMqttClient client, String initialTopic, String publisherId) {
         this.client = client;
         this.topic = initialTopic;
-        this.sensorId = sensorId;
+        this.publisherId = publisherId;
     }
 
     @Override
@@ -43,6 +43,8 @@ public class TempAndHumiditySensor implements Callable<Boolean>, Sensor {
 
     private byte[] prepareMessage() {
         builder.append(System.currentTimeMillis());
+        builder.append("-");
+        builder.append(publisherId);
         builder.append("-");
         builder.append(readTemperature(70, 6));
         builder.append("-");

@@ -9,11 +9,13 @@ public class MqttNode {
     String connectionString;
     String topic;
     MqttClient client;
+    String Id;
 
     public MqttNode(String connectionString, String topic) throws MqttException {
         this.connectionString = connectionString;
         this.topic = topic;
-        client = new MqttClient(connectionString, MqttClient.generateClientId());
+        this.Id = MqttClient.generateClientId();
+        client = new MqttClient(connectionString, Id);
     }
 
     public void connectToBroker() throws MqttException {
