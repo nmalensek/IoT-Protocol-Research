@@ -1,9 +1,10 @@
 # Compiled class file
 *.class
-
+*paho.mqtt.java-master/
+paho*
 # Log file
 *.log
-
+*.iml
 # BlueJ files
 *.ctxt
 
