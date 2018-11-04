@@ -15,13 +15,14 @@ public class MqttNode {
         this.connectionString = connectionString;
         this.topic = topic;
         this.Id = MqttClient.generateClientId();
-        client = new MqttClient(connectionString, Id);
+        client = new MqttClient(connectionString, Id, null);
     }
 
+    //if using setCleanSession(false), then do not set persistence to null above
     public void connectToBroker() throws MqttException {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);
-        options.setCleanSession(false);
+        options.setCleanSession(true);
         client.connect(options);
     }
 }
