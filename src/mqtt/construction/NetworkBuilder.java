@@ -21,12 +21,16 @@ public class NetworkBuilder {
     private int messageFrequency;
     private int totalMessages;
 
-    public NetworkBuilder(String connectionUri, int numPublishers, int waitTime, int messageFrequency) {
+    public NetworkBuilder(String connectionUri, int numPublishers, int waitTime, int messageFrequency, boolean allAtOnce) {
         this.connectionUri = connectionUri;
         this.numPublishers = numPublishers;
         this.waitTime = waitTime;
         this.messageFrequency = messageFrequency;
-        this.waitLatch = new CountDownLatch(0);
+        if (allAtOnce) {
+            this.waitLatch = new CountDownLatch(numPublishers);
+        } else {
+            this.waitLatch = new CountDownLatch(0);
+        }
     }
 
     private void buildPublishers() throws MqttException {
@@ -39,7 +43,7 @@ public class NetworkBuilder {
         }
     }
 
-    private void startPublishers() throws InterruptedException {
+    private void startPublishers() {
         for (MqttPublisher p : publishers) {
             new Thread(p).start();
             waitLatch.countDown();
@@ -74,8 +78,10 @@ public class NetworkBuilder {
         int numPublishers = Integer.parseInt(args[1]);
         int startupTime = Integer.parseInt(args[2]);
         int messageFrequency = Integer.parseInt(args[3]);
+        boolean allAtOnce = Boolean.parseBoolean(args[4]);
 
-        NetworkBuilder networkBuilder = new NetworkBuilder(connection, numPublishers, startupTime, messageFrequency);
+        NetworkBuilder networkBuilder = new NetworkBuilder(connection, numPublishers, startupTime,
+                messageFrequency, allAtOnce);
         System.out.println("Building Publisher(s)...");
         networkBuilder.buildPublishers();
         System.out.println("Publisher(s) built.");
