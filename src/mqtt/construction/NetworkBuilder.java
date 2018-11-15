@@ -10,27 +10,44 @@ import java.util.concurrent.TimeUnit;
 
 public class NetworkBuilder {
 
-    private CountDownLatch messageLimit = new CountDownLatch(100);
-    private static final String CONNECTION = "tcp://localhost:1883";
+    private CountDownLatch messageLimit = new CountDownLatch(1000);
+    private CountDownLatch waitLatch;
     private static final String TOPIC = "group1/tempAndHumidity";
     private ArrayList<MqttPublisher> publishers = new ArrayList<>();
     private ArrayList<MqttSubscriber> subscribers = new ArrayList<>();
+    private String connectionUri;
+    private int numPublishers;
+    private int waitTime;
+    private int messageFrequency;
+    private int totalMessages;
 
-    private void buildAndStartPublishers() throws MqttException {
-        MqttPublisher publisher = new MqttPublisher(CONNECTION, TOPIC);
-        publisher.addSensor();
-        publisher.connectToBroker();
-        MqttPublisher publisher2 = new MqttPublisher(CONNECTION, TOPIC);
-        publisher2.addSensor();
-        publisher2.connectToBroker();
-        publishers.add(publisher);
-        publishers.add(publisher2);
-        publisher.startPublishing(5, 1, TimeUnit.MILLISECONDS);
-        publisher2.startPublishing(5, 1, TimeUnit.MILLISECONDS);
+    public NetworkBuilder(String connectionUri, int numPublishers, int waitTime, int messageFrequency) {
+        this.connectionUri = connectionUri;
+        this.numPublishers = numPublishers;
+        this.waitTime = waitTime;
+        this.messageFrequency = messageFrequency;
+        this.waitLatch = new CountDownLatch(0);
+    }
+
+    private void buildPublishers() throws MqttException {
+        for (int i = 0; i < numPublishers; i++) {
+            MqttPublisher publisher = new MqttPublisher(connectionUri, TOPIC);
+            publisher.addSensor();
+            publisher.connectToBroker();
+            publisher.setSettings(waitTime, messageFrequency, waitLatch);
+            publishers.add(publisher);
+        }
+    }
+
+    private void startPublishers() throws InterruptedException {
+        for (MqttPublisher p : publishers) {
+            new Thread(p).start();
+            waitLatch.countDown();
+        }
     }
 
     private void buildAndStartSubscribers() throws MqttException {
-        MqttSubscriber subscriber = new MqttSubscriber(CONNECTION, TOPIC);
+        MqttSubscriber subscriber = new MqttSubscriber(connectionUri, TOPIC);
         subscriber.connectToBroker();
         subscribers.add(subscriber);
         subscriber.subscribe(messageLimit);
@@ -38,18 +55,36 @@ public class NetworkBuilder {
 
     private void stopPublishers() {
         for (MqttPublisher p : publishers) {
+            p.setRunning(false);
             p.stopPublishing();
+            totalMessages += p.getCounter();
         }
+        System.out.println("Publishers sent " + totalMessages + " messages.");
     }
 
     public static void main(String[] args) throws MqttException, InterruptedException {
-        NetworkBuilder networkBuilder = new NetworkBuilder();
+
+        if (args.length < 4) {
+            System.out.println("Usage: [connection string] [number of publishers] [delay before publishers" +
+                    "start sending messages] [how often publishers send messages (in ms)]");
+            System.exit(0);
+        }
+
+        String connection = args[0];
+        int numPublishers = Integer.parseInt(args[1]);
+        int startupTime = Integer.parseInt(args[2]);
+        int messageFrequency = Integer.parseInt(args[3]);
+
+        NetworkBuilder networkBuilder = new NetworkBuilder(connection, numPublishers, startupTime, messageFrequency);
         System.out.println("Building Publisher(s)...");
-        networkBuilder.buildAndStartPublishers();
+        networkBuilder.buildPublishers();
         System.out.println("Publisher(s) built.");
         System.out.println("Building Subscriber(s)...");
         networkBuilder.buildAndStartSubscribers();
         System.out.println("Subscriber(s) built.");
+        System.out.println("Starting publishers...");
+        networkBuilder.startPublishers();
+        System.out.println("Publishing...");
         networkBuilder.messageLimit.await();
         networkBuilder.stopPublishers();
 

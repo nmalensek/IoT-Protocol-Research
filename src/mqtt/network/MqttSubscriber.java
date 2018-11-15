@@ -12,10 +12,10 @@ public class MqttSubscriber extends MqttNode {
 
     public void subscribe(CountDownLatch counter) throws MqttException {
         client.subscribe(topic, (topic1, message) -> {
-           String payloadData = new String(message.getPayload());
-           long receivedTime = System.currentTimeMillis();
-            System.out.println(receivedTime + "-" + payloadData + "\t" +
-                    "|" + "\t" + "Latency: " + (receivedTime - Long.parseLong(payloadData.split("-")[0])));
+//           String payloadData = new String(message.getPayload());
+//           long receivedTime = System.currentTimeMillis();
+//            System.out.println(receivedTime + "-" + payloadData + "\t" +
+//                    "|" + "\t" + "Latency: " + (receivedTime - Long.parseLong(payloadData.split("-")[0])));
             counter.countDown();
         });
     }

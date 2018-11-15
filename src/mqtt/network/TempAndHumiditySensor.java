@@ -30,8 +30,8 @@ public class TempAndHumiditySensor implements Callable<Boolean>, Sensor {
 
         try {
             MqttMessage message = new MqttMessage(prepareMessage());
-            message.setQos(0);
-            message.setRetained(true);
+//            message.setQos(0);
+//            message.setRetained(true);
 
             client.publish(topic, message);
             return true;
