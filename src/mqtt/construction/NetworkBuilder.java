@@ -6,7 +6,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 public class NetworkBuilder {
 
@@ -55,6 +54,7 @@ public class NetworkBuilder {
         subscriber.connectToBroker();
         subscribers.add(subscriber);
         subscriber.subscribe(messageLimit);
+        new Thread(subscriber).start();
     }
 
     private void stopPublishers() {
@@ -64,6 +64,12 @@ public class NetworkBuilder {
             totalMessages += p.getCounter();
         }
         System.out.println("Publishers sent " + totalMessages + " messages.");
+    }
+
+    private void stopSubscribers() {
+        for (MqttSubscriber s : subscribers) {
+            s.setRunning(false);
+        }
     }
 
     public static void main(String[] args) throws MqttException, InterruptedException {
@@ -93,6 +99,6 @@ public class NetworkBuilder {
         System.out.println("Publishing...");
         networkBuilder.messageLimit.await();
         networkBuilder.stopPublishers();
-
+        networkBuilder.stopSubscribers();
     }
 }
