@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ResultWriter extends Thread {
-    private String writeDirectory = "../results/";
+    private String writeDirectory = "../MqttResults/";
     private ConcurrentLinkedQueue<String> resultQueue = new ConcurrentLinkedQueue<>();
     private boolean running = true;
     private long startTime;
@@ -20,7 +20,7 @@ public class ResultWriter extends Thread {
     }
 
     public void writeResults(String results) {
-        try (FileOutputStream stream = new FileOutputStream(writeDirectory + "MQTT_results" + startTime,
+        try (FileOutputStream stream = new FileOutputStream(writeDirectory + "results" + startTime,
                 true)) {
             stream.write((results + "\n").getBytes());
         } catch (IOException e) {
