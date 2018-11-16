@@ -60,16 +60,22 @@ public class NetworkBuilder {
     private void stopPublishers() {
         for (MqttPublisher p : publishers) {
             p.setRunning(false);
-            p.stopPublishing();
+//            p.stopPublishing();
             totalMessages += p.getCounter();
         }
         System.out.println("Publishers sent " + totalMessages + " messages.");
     }
 
     private void stopSubscribers() {
+        long receivedMessages = 0;
+        long receivedLatency = 0;
         for (MqttSubscriber s : subscribers) {
             s.setRunning(false);
+            receivedMessages += s.getReceivedMessages();
+            receivedLatency += s.getTotalLatency();
         }
+        System.out.println("Subscribers received " + receivedMessages +
+                " total messages with an average latency of " + receivedLatency/receivedMessages + " ms");
     }
 
     public static void main(String[] args) throws MqttException, InterruptedException {
