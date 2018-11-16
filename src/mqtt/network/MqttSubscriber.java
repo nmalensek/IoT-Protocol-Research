@@ -2,7 +2,6 @@ package mqtt.network;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
 
-import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
 public class MqttSubscriber extends MqttNode implements Runnable {
@@ -17,8 +16,6 @@ public class MqttSubscriber extends MqttNode implements Runnable {
     public void subscribe(CountDownLatch counter) throws MqttException {
         client.subscribe(topic, (topic1, message) -> {
            String payloadData = new String(message.getPayload());
-//            System.out.println(receivedTime + "-" + payloadData + "\t" +
-//                    "|" + "\t" + "Latency: " + (receivedTime - Long.parseLong(payloadData.split("-")[0])));
             receivedMessages++;
             long receivedTime = System.currentTimeMillis();
             totalLatency += (receivedTime - Long.parseLong(payloadData.split("-")[0]));
@@ -34,8 +31,8 @@ public class MqttSubscriber extends MqttNode implements Runnable {
     public void run() {
         long previousTotal = 0;
         long previousLatency = 0;
-        long snapShot = 0;
-        long snapShotLatency = 0;
+        long snapShot;
+        long snapShotLatency;
 
         while(running) {
             try {
@@ -65,3 +62,5 @@ public class MqttSubscriber extends MqttNode implements Runnable {
         return totalLatency;
     }
 }
+//            System.out.println(receivedTime + "-" + payloadData + "\t" +
+//                    "|" + "\t" + "Latency: " + (receivedTime - Long.parseLong(payloadData.split("-")[0])));

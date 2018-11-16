@@ -3,9 +3,6 @@ package mqtt.network;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class MqttPublisher extends MqttNode implements Runnable {
 
@@ -20,8 +17,8 @@ public class MqttPublisher extends MqttNode implements Runnable {
         super(connectionString, topic);
     }
 
-    public void addSensor() {
-        sensor = new TempAndHumiditySensor(client, topic, Id);
+    public void addSensor(int qos) {
+        sensor = new TempAndHumiditySensor(client, topic, Id, qos);
     }
 
     public void setSettings(int delay, long interval, CountDownLatch wait) {

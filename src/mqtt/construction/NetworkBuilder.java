@@ -19,9 +19,12 @@ public class NetworkBuilder {
     private int waitTime;
     private int messageFrequency;
     private int totalMessages;
+    private int qosLevel;
 
-    public NetworkBuilder(String connectionUri, int numPublishers, int waitTime, int messageFrequency, boolean allAtOnce) {
+    public NetworkBuilder(String connectionUri, int qosLevel, int numPublishers,
+                          int waitTime, int messageFrequency, boolean allAtOnce) {
         this.connectionUri = connectionUri;
+        this.qosLevel = qosLevel;
         this.numPublishers = numPublishers;
         this.waitTime = waitTime;
         this.messageFrequency = messageFrequency;
@@ -35,7 +38,7 @@ public class NetworkBuilder {
     private void buildPublishers() throws MqttException {
         for (int i = 0; i < numPublishers; i++) {
             MqttPublisher publisher = new MqttPublisher(connectionUri, TOPIC);
-            publisher.addSensor();
+            publisher.addSensor(qosLevel);
             publisher.connectToBroker();
             publisher.setSettings(waitTime, messageFrequency, waitLatch);
             publishers.add(publisher);
@@ -81,18 +84,19 @@ public class NetworkBuilder {
     public static void main(String[] args) throws MqttException, InterruptedException {
 
         if (args.length < 4) {
-            System.out.println("Usage: [connection string] [number of publishers] [delay before publishers" +
+            System.out.println("Usage: [connection string] [QoS level] [number of publishers] [delay before publishers" +
                     "start sending messages] [how often publishers send messages (in ms)]");
             System.exit(0);
         }
 
         String connection = args[0];
-        int numPublishers = Integer.parseInt(args[1]);
-        int startupTime = Integer.parseInt(args[2]);
-        int messageFrequency = Integer.parseInt(args[3]);
-        boolean allAtOnce = Boolean.parseBoolean(args[4]);
+        int setQos = Integer.parseInt(args[1]);
+        int numPublishers = Integer.parseInt(args[2]);
+        int startupTime = Integer.parseInt(args[3]);
+        int messageFrequency = Integer.parseInt(args[4]);
+        boolean allAtOnce = Boolean.parseBoolean(args[5]);
 
-        NetworkBuilder networkBuilder = new NetworkBuilder(connection, numPublishers, startupTime,
+        NetworkBuilder networkBuilder = new NetworkBuilder(connection, setQos, numPublishers, startupTime,
                 messageFrequency, allAtOnce);
         System.out.println("Building Publisher(s)...");
         networkBuilder.buildPublishers();

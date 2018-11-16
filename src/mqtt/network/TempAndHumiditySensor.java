@@ -13,11 +13,13 @@ public class TempAndHumiditySensor implements Callable<Boolean>, Sensor {
     private Random random = new Random();
     private StringBuilder builder = new StringBuilder();
     private String topic;
+    private int qosLevel;
 
-    public TempAndHumiditySensor(IMqttClient client, String initialTopic, String publisherId) {
+    public TempAndHumiditySensor(IMqttClient client, String initialTopic, String publisherId, int qosLevel) {
         this.client = client;
         this.topic = initialTopic;
         this.publisherId = publisherId;
+        this.qosLevel = qosLevel;
     }
 
     @Override
@@ -30,7 +32,7 @@ public class TempAndHumiditySensor implements Callable<Boolean>, Sensor {
 
         try {
             MqttMessage message = new MqttMessage(prepareMessage());
-//            message.setQos(0);
+            message.setQos(qosLevel);
 //            message.setRetained(true);
 
             client.publish(topic, message);
