@@ -1,4 +1,6 @@
-package mqtt.network;
+package mqtt.util;
+
+import mqtt.network.MqttSubscriber;
 
 import java.io.File;
 import java.io.FileOutputStream;

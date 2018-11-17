@@ -1,8 +1,7 @@
 package mqtt.network;
 
+import mqtt.util.ResultWriter;
 import org.eclipse.paho.client.mqttv3.MqttException;
-
-import java.util.concurrent.CountDownLatch;
 
 public class MqttSubscriber extends MqttNode implements Runnable {
     private long receivedMessages = 0;
@@ -15,13 +14,12 @@ public class MqttSubscriber extends MqttNode implements Runnable {
         writer.start();
     }
 
-    public void subscribe(CountDownLatch counter) throws MqttException {
+    public void subscribe() throws MqttException {
         client.subscribe(topic, (topic1, message) -> {
            String payloadData = new String(message.getPayload());
             receivedMessages++;
             long receivedTime = System.currentTimeMillis();
             totalLatency += (receivedTime - Long.parseLong(payloadData.split("-")[0]));
-            counter.countDown();
         });
     }
 
