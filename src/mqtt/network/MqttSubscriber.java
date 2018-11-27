@@ -40,7 +40,7 @@ public class MqttSubscriber extends MqttNode implements Runnable {
         long averageLatency;
         while(running) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(1000);
                 snapShot = receivedMessages - previousTotal;
                 snapShotLatency = totalLatency - previousLatency;
                 previousTotal = receivedMessages;

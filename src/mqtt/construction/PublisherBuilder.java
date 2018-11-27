@@ -10,7 +10,7 @@ import java.util.concurrent.CountDownLatch;
 public class PublisherBuilder implements Builder {
     private CountDownLatch waitLatch;
     private ArrayList<MqttPublisher> publishers = new ArrayList<>();
-    private static final String TOPIC = "group1/tempAndHumidity"; //add ability to increment
+    private static final String TOPIC = "group1/tempAndHumidity";
     private String connectionUri;
     private int numPublishers;
     private int waitTime;
@@ -19,6 +19,7 @@ public class PublisherBuilder implements Builder {
     private int qosLevel;
     private long processDuration;
     private ProcessTimer timer;
+    private boolean allAtOnce;
 
     public PublisherBuilder(String connectionUri, int qosLevel, int numPublishers,
                             int waitTime, int messageFrequency, boolean allAtOnce, long processDuration) {
@@ -28,6 +29,7 @@ public class PublisherBuilder implements Builder {
         this.waitTime = waitTime;
         this.messageFrequency = messageFrequency;
         this.processDuration = processDuration;
+        this.allAtOnce = allAtOnce;
         if (allAtOnce) {
             this.waitLatch = new CountDownLatch(numPublishers);
         } else {
@@ -42,6 +44,10 @@ public class PublisherBuilder implements Builder {
             publisher.connectToBroker();
             publisher.setSettings(waitTime, messageFrequency, waitLatch);
             publishers.add(publisher);
+            if (!allAtOnce) { new Thread(publisher).start(); }
+            if (publishers.size() % 10 == 0) {
+                System.out.println("Built " + publishers.size() + " publishers of 100");
+            }
         }
         timer = new ProcessTimer(processDuration, this);
         timer.start();
@@ -69,7 +75,8 @@ public class PublisherBuilder implements Builder {
 
         if (args.length < 4) {
             System.out.println("Usage: [connection string] [QoS level] [number of publishers] [delay before publishers" +
-                    "start sending messages] [how often publishers send messages (in ms)] [total process duration (in ms)]");
+                    "start sending messages] [how often publishers send messages (in ms)] " +
+                    "[whether publishers wait to publish until all are constructed] [total process duration (in ms)]");
             System.exit(0);
         }
 
@@ -88,7 +95,9 @@ public class PublisherBuilder implements Builder {
         publisherBuilder.buildPublishers();
         System.out.println("Publisher(s) built.");
         System.out.println("Starting publishers...");
-        publisherBuilder.start();
+        if (allAtOnce) {
+            publisherBuilder.start();
+        }
         System.out.println("Publishing...");
     }
 
