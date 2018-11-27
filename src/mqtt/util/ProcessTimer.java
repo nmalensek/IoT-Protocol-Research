@@ -16,8 +16,8 @@ public class ProcessTimer extends Thread {
     public void run() {
         while(duration > 0) {
             try {
-                duration--;
-                Thread.sleep(1);
+                Thread.sleep(1000);
+                duration = duration - 1000;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
